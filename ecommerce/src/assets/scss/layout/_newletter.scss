@@ -1,0 +1,52 @@
+.newletter {
+  text-align: center;
+  padding: 50px 0;
+  background-color: #f2f2f2;
+  .newletter-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: $text-black;
+  }
+  p {
+    font-size: 15px;
+    line-height: 24px;
+    padding: 8px 0;
+    margin: 0;
+  }
+  .newletter-subscribe {
+    width: -webkit-fill-available;
+    padding: 16px 20px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .newletter-subscribe-input {
+    height: 40px;
+    border-radius: 40px 0 0 40px;
+    font-size: 14px;
+    padding: 0 0 0 24px;
+    color: #515154;
+    width: 100%;
+    border: unset;
+    max-width: 470px;
+  }
+  .newletter-subscribe-input:focus,
+  .newletter-subscribe-input:focus-visible {
+    outline: unset;
+  }
+  .btn-subscribe {
+    min-width: 100px;
+    padding: 0 5px;
+    height: 40px;
+    border: unset;
+    border-radius: 40px;
+    background: #0066cc;
+    font-size: 12px;
+    margin-left: -52px;
+    text-transform: none;
+    color: white;
+  }
+  .btn-subscribe:hover {
+    background-color: #248ece;
+  }
+}

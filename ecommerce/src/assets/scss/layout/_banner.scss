@@ -1,0 +1,44 @@
+.ant-carousel {
+  .slick-prev,
+  .slick-prev:focus {
+    left: 10px;
+    z-index: 2;
+    color: white;
+    background-color: rgba(27, 26, 26, 0.2);
+    border-radius: 50%;
+    font-size: 20px;
+    padding: 10px;
+  }
+}
+
+.ant-carousel {
+  .slick-next,
+  .slick-next:focus {
+    right: 10px;
+    z-index: 2;
+    color: white;
+    background-color: rgba(27, 26, 26, 0.2);
+    border-radius: 50%;
+    font-size: 20px;
+    padding: 10px;
+  }
+}
+.ant-carousel .slick-next:hover,
+.ant-carousel .slick-prev:hover {
+  background-color: rgba(27, 26, 26, 0.5);
+  color: white;
+}
+.slick-dots {
+  li {
+    height: 8px !important;
+    width: 8px !important;
+    button {
+      height: 100% !important;
+      border-radius: 50% !important;
+      background-color: rgba(27, 26, 26, 0.8) !important;
+    }
+    button:before {
+      font-size: 0;
+    }
+  }
+}

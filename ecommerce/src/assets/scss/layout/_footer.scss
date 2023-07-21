@@ -1,0 +1,126 @@
+.footer {
+  background-color: $text-black;
+  padding: 64px 0 32px;
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 21px;
+    border-bottom: 1px solid $primary-color;
+    .about-us {
+      width: 30%;
+    }
+    .information,
+    .my-contact {
+      width: 25%;
+    }
+    .customer-service {
+      width: 20%;
+    }
+    .information {
+      padding-left: 60px;
+    }
+  }
+  //   footer bottom
+  .footer-bottom {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    .ft-disclaimer {
+      color: #86868b;
+      font-size: 13px;
+      line-height: 21px;
+    }
+    img {
+      width: 139px;
+    }
+  }
+}
+.ft-top-block {
+  .footer-logo {
+    width: 50%;
+    margin-bottom: 8px;
+    img {
+      width: 100%;
+    }
+  }
+  .ft-introduce {
+    p {
+      margin: 15px 0;
+      padding: 10px 0;
+
+      color: #d2d2d7;
+      font-size: 15px;
+      line-height: 24px;
+      text-align: justify;
+    }
+  }
+  .social-list {
+    list-style: none;
+    display: flex;
+    padding: 0;
+  }
+  .title {
+    color: #d2d2d7;
+    font-size: 15px;
+    line-height: 21px;
+    .fa-chevron-down {
+      display: none;
+    }
+  }
+  .ft-list {
+    list-style: none;
+    padding: 10px 0 0;
+    li {
+      font-size: 13px;
+      line-height: 28px;
+      a {
+        color: #86868b;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      ul {
+        list-style: none;
+      }
+      [href="tel:19006626"]:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+@media screen and (max-width: 570px) {
+  .close {
+    display: none;
+  }
+  .open {
+    display: block;
+  }
+
+  .footer .footer-top {
+    flex-direction: column;
+    border: none;
+    .ft-top-block {
+      width: 100%;
+      padding: 0;
+      .title {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid $primary-color;
+        .fa-chevron-down {
+          display: block;
+        }
+      }
+    }
+  }
+}
+@media screen and (min-width: 571px) and (max-width: 991px) {
+  .footer {
+    .footer-top {
+      .information {
+        padding-left: 20px;
+      }
+    }
+  }
+}
