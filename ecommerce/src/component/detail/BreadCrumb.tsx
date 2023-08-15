@@ -1,5 +1,11 @@
 import { Breadcrumb } from "antd";
+import { useParams } from "react-router-dom";
+import useFetchSingle from "../../customize/useFetchSingle";
 const BreadCrumb = () => {
+  const { productSlug } = useParams();
+  const { data: product } = useFetchSingle(
+    `http://localhost:8080/${productSlug}`
+  );
   return (
     <Breadcrumb
       separator=">"
@@ -17,7 +23,7 @@ const BreadCrumb = () => {
           href: "/iphone-14-series",
         },
         {
-          title: "iPhone 14 Pro Max 128GB",
+          title: `${product.productName}`,
         },
       ]}
     />

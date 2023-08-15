@@ -1,8 +1,8 @@
-import slider3 from "./../../assets/images/Iphone/ip-14-promax-preview.jpeg";
-const PreviewPicture = () => {
+const PreviewPicture = (imgPreview: { imgPreview: string }) => {
+  const imgSrc = imgPreview.imgPreview;
   return (
     <a href="/#">
-      <img src={slider3} alt="Ảnh preview" />
+      <img src={imgSrc} alt="Ảnh preview" />
     </a>
   );
 };

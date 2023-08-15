@@ -1,10 +1,59 @@
-import { Select } from "antd";
-const PictureOverview = () => {
+import { Button, Select } from "antd";
+import { useParams } from "react-router-dom";
+import useFetchSingle from "../../customize/useFetchSingle";
+interface PRODUCT {
+  id: number;
+  productName: string;
+  crrPrice: string;
+  oldPrice: string;
+  cate_id: number;
+  imgName: string;
+  slug: string;
+}
+let listCart: any = [];
+const PictureOverview = (data: any) => {
+  const { productSlug } = useParams();
+  const { data: product } = useFetchSingle(
+    `http://localhost:8080/${productSlug}`
+  );
+  const addToCard = (product: PRODUCT) => {
+    if (window.localStorage.getItem("listCart")) {
+      listCart = JSON.parse(window.localStorage.getItem("listCart") || "[]");
+    }
+    if (product) {
+      const recordCart = listCart.filter(
+        (record: any) => record.id === product.id
+      );
+      // console.log(recordCart);
+      if (recordCart.length) {
+        const newList = listCart.map((record: any) => {
+          if (record.id === product.id) {
+            return {
+              ...product,
+              quantity: record.quantity + 1,
+            };
+          }
+          return record;
+        });
+        localStorage.setItem("listCart", JSON.stringify(newList));
+        console.log("newList:", newList);
+      } else {
+        const cartItem = { ...product, quantity: 1 };
+        const newList = [...listCart, cartItem];
+        localStorage.setItem("listCart", JSON.stringify(newList));
+        console.log("newList:", newList);
+      }
+      window.location.assign("http://localhost:3000/cart");
+      // Cart.push(product);
+      // window.localStorage.setItem("Cart", JSON.stringify(Cart));
+    }
+  };
+  // console.log(product);
   return (
     <div className="overview">
       <div className="wrapper-info">
         <div className="product-name">
-          <h1>iPhone 14 Pro Max 128GB</h1>
+          <h1>{product.productName}</h1>
         </div>
         <div className="product-rate d-flex justify-content-between">
           <div className="d-flex">
@@ -61,9 +110,9 @@ const PictureOverview = () => {
       </div>
       {/* Price */}
       <div className="prices">
-        <div className="current-price">25.990.000₫</div>
+        <div className="current-price">{product.crrPrice}₫</div>
         <div className="old-price">
-          <del>34.990.000₫</del>
+          <del>{product.oldPrice}₫</del>
         </div>
       </div>
 
@@ -133,34 +182,56 @@ const PictureOverview = () => {
         </div>
         <p className="title">
           <i className="fa-solid fa-gift"></i>
-          Khuyến mại
+          Ưu đãi
         </p>
         <div className="info-promotions">
           <ul>
             <li>
-              <input type="radio" id="pay-off" name="promotion" value="100" />
-              <label htmlFor="pay-off">Mua thẳng</label>
+              <strong style={{ fontSize: "14px", color: "red" }}>
+                Chào Tân Sinh Viên (5/7 - 31/7)
+              </strong>
+              <a href="/#" style={{ fontSize: "14px" }}>
+                {" "}
+                <strong>(chi tiết)</strong>
+              </a>
             </li>
-            <li>
-              <input
-                type="radio"
-                id="installment"
-                name="promotion"
-                value="50"
-              />
-              <label htmlFor="installment">Trả góp 0%</label>
+            <li style={{ fontSize: "14px" }}>
+              <i
+                className="fa-solid fa-circle-check"
+                style={{ color: "#80d150", marginRight: "10px" }}
+              ></i>
+              Giảm <strong>200.000đ</strong> cho khách hàng là học sinh - sinh
+              viên
             </li>
-            <li>
-              <input type="radio" id="vip" name="promotion" value="50" />
-              <label htmlFor="vip">
-                Giá ưu đãi mua kèm bảo hành kim cương, VIP
-              </label>
+            <li style={{ fontSize: "14px" }}>
+              <i
+                className="fa-solid fa-circle-check"
+                style={{ color: "#80d150", marginRight: "10px" }}
+              ></i>
+              Thi tốt quà to - Đỗ cao giảm khủng đến <strong>500.000đ</strong>
             </li>
           </ul>
         </div>
         <div className="" style={{ margin: "20px 0 20px 15px" }}>
           <a href="/">Xem thêm</a>
         </div>
+      </div>
+
+      {/* BTN MUA */}
+      <div className="add-to-cart" style={{ marginTop: "20px" }}>
+        <Button
+          type="primary"
+          onClick={() => addToCard(product)}
+          style={{
+            width: "100%",
+            height: "50px",
+            textTransform: "uppercase",
+            fontSize: "16px",
+            fontWeight: "700",
+          }}
+        >
+          mua ngay
+        </Button>
       </div>
       <div className="product-policy">
         <div className="prd-policy">

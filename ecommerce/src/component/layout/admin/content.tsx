@@ -7,6 +7,7 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme, MenuProps } from "antd";
+import { NavLink } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -25,12 +26,17 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Trang chủ", "1", <HomeOutlined />),
+  getItem(
+    <NavLink to={"/admin"}>{"Trang chủ"}</NavLink>,
+    "1",
+    <HomeOutlined />
+  ),
   getItem("Thống kê", "2", <PieChartOutlined />),
   getItem("Quản lý", "sub1", <ToolOutlined />, [
     getItem("Danh mục", "3"),
-    getItem("Sản phẩm", "4"),
+    getItem(<NavLink to={"/admin"}>{"Sản phẩm"}</NavLink>, "4"),
     getItem("Người dùng", "5"),
+    getItem(<NavLink to={"/product-image"}>{"Ảnh sản phẩm"}</NavLink>, "6"),
   ]),
 ];
 
@@ -43,7 +49,18 @@ const ContentComponent = ({ children }: { children: ReactNode }) => {
   } = theme.useToken();
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{
+          position: "sticky",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          height: "100vh",
+        }}
+      >
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"

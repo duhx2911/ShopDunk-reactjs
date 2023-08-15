@@ -1,119 +1,42 @@
 import { Col, Row } from "antd";
-const Product = () => {
+import CardItem from "./../../../component/CardItem";
+import useFetch from "../../../customize/useFetch";
+import { useSelector } from "react-redux";
+import store from "../../../stores";
+import { useEffect } from "react";
+import { getListProduct } from "../../../stores/actions/actionReducers";
+const Product = (props: { cateID: number }) => {
+  const dataRedux: any = useSelector((state) => state);
+  const dataProduct = dataRedux?.productReducer?.products || [];
+  const fetchData = async () => {
+    store.dispatch(getListProduct());
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const cateID = props.cateID;
   return (
-    <div className="product-block">
-      <div className="category-item">
-        <h2 className="block-title">
-          <a href="/#">iPhone</a>
-        </h2>
-        <div className="product-list">
-          <Row gutter={16}>
-            <Col span={6}>
-              <div className="card-item">
-                <div className="product-tag">
-                  <img src="images/khai-truong.png" alt="" />
-                </div>
-                <div className="product-img">
-                  <a href="/details">
-                    <img
-                      src="images/Iphone/iphone-14-pro-max-128gb.png"
-                      alt="iPhone 14 Pro Max 128GB img"
-                    />
-                  </a>
-                </div>
-                <div className="product-detail">
-                  <p className="product-name">
-                    <a href="/details">iPhone 14 Pro Max 128GB</a>
-                  </p>
-                  <div className="product-price">
-                    <p className="current-price">26.790.000₫</p>
-                    <del className="old-price">34.990.000₫</del>
-                  </div>
-                </div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div className="card-item">
-                <div className="product-tag">
-                  <img src="images/khai-truong.png" alt="" />
-                </div>
-                <div className="product-img">
-                  <a href="/#">
-                    <img
-                      src="images/Iphone/iphone-14-128gb.png"
-                      alt="iPhone 14 Pro Max 128GB img"
-                    />
-                  </a>
-                </div>
-                <div className="product-detail">
-                  <p className="product-name">
-                    <a href="/#">iPhone 14 Pro Max 128GB</a>
-                  </p>
-                  <div className="product-price">
-                    <p className="current-price">26.790.000₫</p>
-                    <del className="old-price">34.990.000₫</del>
-                  </div>
-                </div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div className="card-item">
-                <div className="product-tag">
-                  <img src="images/khai-truong.png" alt="" />
-                </div>
-                <div className="product-img">
-                  <a href="/#">
-                    <img
-                      src="images/Iphone/iphone-14-plus-128gb.png"
-                      alt="iPhone 14 Pro Max 128GB img"
-                    />
-                  </a>
-                </div>
-                <div className="product-detail">
-                  <p className="product-name">
-                    <a href="/#">iPhone 14 Pro Max 128GB</a>
-                  </p>
-                  <div className="product-price">
-                    <p className="current-price">26.790.000₫</p>
-                    <del className="old-price">34.990.000₫</del>
-                  </div>
-                </div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div className="card-item">
-                <div className="product-tag">
-                  <img src="images/khai-truong.png" alt="" />
-                </div>
-                <div className="product-img">
-                  <a href="/#">
-                    <img
-                      src="images/Iphone/iphone-14-pro-128gb.png"
-                      alt="iPhone 14 Pro Max 128GB img"
-                    />
-                  </a>
-                </div>
-                <div className="product-detail">
-                  <p className="product-name">
-                    <a href="/#">iPhone 14 Pro Max 128GB</a>
-                  </p>
-                  <div className="product-price">
-                    <p className="current-price">26.790.000₫</p>
-                    <del className="old-price">34.990.000₫</del>
-                  </div>
-                </div>
-              </div>
-            </Col>
-          </Row>
-          <div className="show-all ">
-            <a className="Product-btn" href="/#">
-              Xem tất cả Iphone
-              <i className="fa-solid fa-chevron-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Row gutter={16}>
+      {dataProduct.map(
+        (item: {
+          id: number;
+          productName: string;
+          crrPrice: string;
+          oldPrice: string;
+          cate_id: number;
+          imgName: string;
+          slug: string;
+        }) => {
+          if (item.cate_id === cateID) {
+            return (
+              <Col span={6}>
+                <CardItem data={item} />
+              </Col>
+            );
+          }
+        }
+      )}
+    </Row>
   );
 };
 export default Product;

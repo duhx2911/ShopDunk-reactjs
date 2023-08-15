@@ -5,7 +5,7 @@ const Footer = () => {
         <div className="footer-top">
           <div className="ft-top-block about-us">
             <div className="footer-logo">
-              <img src="images/logo_brand.png" alt="Logo brand" />
+              <img src="/images/logo_brand.png" alt="Logo brand" />
             </div>
             <div className="ft-introduce">
               <p>

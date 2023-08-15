@@ -1,9 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { Space, Table, Button, Modal, Form, Input, Upload, Select } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Space,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Upload,
+  Select,
+  Popconfirm,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import styled from "styled-components";
 import axios from "axios";
+import useFetch from "../../customize/useFetch";
+import { notification } from "antd";
+import { NotificationPlacement } from "antd/es/notification/interface";
+
+import { useSelector } from "react-redux";
+import {
+  getProduct,
+  startCountAction,
+  getListProduct,
+  createProduct,
+  updateProduct,
+  delProduct,
+  getListCategory,
+} from "../../stores/actions/actionReducers";
+import store from "../../stores";
+import { ENV_BE } from "../../constants";
+import { getAPI } from "../../api";
+
+type NotificationType = "success" | "info" | "warning" | "error";
 let cate_df: string = "Choose";
 enum FLAG {
   EDIT,
@@ -19,18 +48,21 @@ interface DataType {
 }
 
 const AdminComponent = () => {
-  const [data, setData] = useState([]);
+  const [api, contextHolder] = notification.useNotification();
   const [modal2Open, setModal2Open] = useState(false);
   const [form] = Form.useForm();
   const [flag, setFlag] = useState<FLAG>(FLAG.CREATE);
-  const fetchData = async () => {
-    const response = await fetch("http://localhost:8080/products");
-    const jsonData = await response.json();
-    if (jsonData) {
-      setData(jsonData);
-    }
-  };
+  // const { data: categories } = useFetch("http://localhost:8080/categories");
 
+  const dataRedux: any = useSelector((state) => state);
+  const dataProduct = dataRedux?.productReducer?.products || [];
+  const dataCategory = dataRedux?.categoryReducer?.categories;
+  const isLoading = dataRedux.productReducer.isLoading || false;
+  // console.log("dataCategory: ", dataCategory);
+  const fetchData = async () => {
+    store.dispatch(getListProduct());
+    store.dispatch(getListCategory());
+  };
   const openCreate = () => {
     setModal2Open(true);
     setFlag(FLAG.CREATE);
@@ -40,56 +72,64 @@ const AdminComponent = () => {
     setFlag(FLAG.EDIT);
     form.setFieldsValue(record);
     setModal2Open(true);
-    console.log(record);
+    // console.log(record);
   };
   const deleteProduct = async (record: any) => {
-    if (window.confirm("Delete this Product?") == true) {
-      const response = await axios.delete(
-        "http://localhost:8080/products/" + record.id
-      );
-      if (response.status === 200) {
-        fetchData();
-      }
-    }
+    store.dispatch(delProduct(record, notify));
+    // console.log(record);
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const onFinish = async (values: any) => {
-    console.log("Success:", values);
-    const newValue = {
-      ...values,
-    };
-    if (flag === FLAG.CREATE) {
-      const response = await axios.post(
-        "http://localhost:8080/products",
-        newValue
-      );
-      if (response.status === 200) {
+  const openNotification = (
+    placement: NotificationPlacement,
+    type: NotificationType,
+    mess: string
+  ) => {
+    api[type]({
+      message: mess,
+      placement,
+    });
+  };
+  const notify = (status: any) => {
+    if (status === "success") {
+      openNotification("top", "success", status);
+      if (flag === FLAG.CREATE) {
         form.resetFields();
-        fetchData();
       }
     } else {
-      const response = await axios.put(
-        "http://localhost:8080/products/" + newValue.id,
-        newValue
-      );
-      if (response.status === 200) {
-        fetchData();
-      }
+      openNotification("top", "error", status);
+    }
+  };
+  const onFinish = async (values: any) => {
+    const newValue = {
+      ...values,
+      imgName: values.imgName.file.name,
+    };
+    // console.log(newValue);
+    if (flag === FLAG.CREATE) {
+      store.dispatch(createProduct(newValue, notify));
+      // if (response.status === 200) {
+      //   form.resetFields();
+      // }
+    } else {
+      store.dispatch(updateProduct(newValue, notify));
+      // if (response.status === 200) {
+      //   openNotification("top", "success", "Sửa thành công !");
+      // }
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
+  // const normFile = (e: any) => {
+  //   if (Array.isArray(e)) {
+  //     return e;
+  //   }
+  //   return e?.fileList;
+  // };
+  useEffect(() => {
+    fetchData();
+  }, []);
   const columns: ColumnsType<DataType> = [
     {
       title: "ID",
@@ -118,6 +158,11 @@ const AdminComponent = () => {
       dataIndex: "cate_id",
     },
     {
+      title: "Slug",
+      key: "slug",
+      dataIndex: "slug",
+    },
+    {
       title: "Image",
       key: "imgName",
       dataIndex: "imgName",
@@ -130,9 +175,17 @@ const AdminComponent = () => {
           <Button type="primary" onClick={() => openEdit(record)}>
             Edit
           </Button>
-          <Button type="primary" onClick={() => deleteProduct(record)} danger>
-            Delete
-          </Button>
+          <Popconfirm
+            title="Xóa sản phẩm"
+            description="Bạn chắc chắn muốn xóa sản phẩm này?"
+            okText="Có"
+            cancelText="Hủy"
+            onConfirm={() => deleteProduct(record)}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -140,8 +193,14 @@ const AdminComponent = () => {
 
   return (
     <div>
+      {contextHolder}
       <StyleButton onClick={openCreate}>Add Product</StyleButton>
-      <Table columns={columns} dataSource={data} bordered />
+      <Table
+        columns={columns}
+        dataSource={dataProduct}
+        bordered={true}
+        loading={isLoading}
+      />
       <Modal
         title={flag === FLAG.CREATE ? "Create New Product" : "Edit Product"}
         centered
@@ -191,16 +250,29 @@ const AdminComponent = () => {
             rules={[{ required: true }]}
           >
             <Select defaultValue={cate_df}>
-              <Select.Option value="1">Demo 1</Select.Option>
-              <Select.Option value="2">Demo 2</Select.Option>
-              <Select.Option value="3">Demo 3</Select.Option>
+              {dataCategory.map(
+                (item: {
+                  cate_id: number;
+                  cate_name: string;
+                  slug: string;
+                  folder: string;
+                }) => {
+                  return (
+                    <Select.Option value={`${item.cate_id}`} key={item.cate_id}>
+                      {item.cate_name}
+                    </Select.Option>
+                  );
+                }
+              )}
             </Select>
+          </Form.Item>
+          <Form.Item label="Slug" name="slug" rules={[{ required: true }]}>
+            <Input />
           </Form.Item>
           <Form.Item label="Image" name="imgName" rules={[{ required: true }]}>
             <Upload maxCount={1}>
               <Button icon={<UploadOutlined />}>Upload </Button>
             </Upload>
-            {/* <Input type="file" /> */}
           </Form.Item>
           <Form.Item>
             <StyleButton type="primary" htmlType="submit">

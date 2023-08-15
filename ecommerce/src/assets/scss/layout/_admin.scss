@@ -1,0 +1,66 @@
+.header-admin {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  align-items: center;
+  .username {
+    color: white;
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .account {
+    position: relative;
+    .accout-box {
+      position: absolute;
+      width: 200px;
+      top: 50px;
+      right: -5px;
+      background-color: #eff0f5;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+        0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+      .account-list {
+        list-style: none;
+        padding: 0;
+        cursor: pointer;
+        .account-item {
+          padding: 8px 0 8px 20px;
+          font-size: 16px;
+          a {
+            color: $primary-color;
+          }
+          button {
+            color: $primary-color;
+            border: none;
+            background-color: none;
+            padding: 0;
+            font-size: 16px;
+          }
+          .account-icon {
+            margin-right: 10px;
+          }
+          &:hover {
+            padding-left: 25px;
+            background-color: #b9d8f8;
+            button {
+              background-color: #b9d8f8;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.upload-list-inline .ant-upload-list-item {
+  float: left;
+  width: 200px;
+  margin-inline-end: 8px;
+}
+
+.ant-upload-rtl.upload-list-inline .ant-upload-list-item {
+  float: right;
+}
